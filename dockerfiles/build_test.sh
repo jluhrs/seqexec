@@ -9,7 +9,7 @@ mkdir -p "$OUTPUT_DIR"
 
 # Build Docker image
 echo "Building Docker image..."
-docker build -t "$IMAGE_NAME" -f Dockerfile.gn_test ..
+docker build -t "$IMAGE_NAME" -f Dockerfile.dev ..
 
 # Extract and copy tar file to host
 echo "Extracting and copying tar file to host..."
