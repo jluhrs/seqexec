@@ -47,8 +47,8 @@ RUN cd /seqexec/app/seqexec-server-gn/target/universal/ && \
     mv * "$TAR_DIR"/ || true && \
     cd "$TAR_DIR" && \
     apt-get update && \
-    apt-get install -y openjdk-8-jdk && \
-    cp -r /usr/lib/jvm/java-8-openjdk-amd64/jre ./jre && \
+    apt-get install -y openjdk-17-jdk && \
+    cp -r /usr/lib/jvm/java-17-openjdk-amd64 ./jre && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
     cd .. && \
