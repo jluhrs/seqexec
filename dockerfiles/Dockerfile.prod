@@ -48,7 +48,7 @@ RUN cd /seqexec/app/seqexec-server-gn/target/universal/ && \
     cd "$TAR_DIR" && \
     apt-get update && \
     apt-get install -y openjdk-8-jdk && \
-    cp -r /usr/lib/jvm/java-8-openjdk-amd64/ jre-1.8 && \
+    cp -r /usr/lib/jvm/java-8-openjdk-amd64/ jre && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
     cd .. && \
