@@ -85,7 +85,7 @@ RUN cd /seqexec/app/seqexec-server-gn-test/target/universal/ && \
     tar -xvf *.tgz && \
     TAR_DIR=$(ls -d app_seqexec_server_gn_test-*/ | head -n 1 | tr -d '/') && \
     mkdir "$TAR_DIR/jre" && \
-    cp -r $JAVA_HOME/* "$TAR_DIR/jre/" && \
+    cp -a $JAVA_HOME/* "$TAR_DIR/jre/" && \
     tar -cvzf "$TAR_DIR".tgz "$TAR_DIR" && \
     echo "export SEQEXEC_DIR=/seqexec/app/seqexec-server-gn-test/target/universal/$TAR_DIR" >> /etc/environment
 
