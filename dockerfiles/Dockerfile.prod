@@ -50,8 +50,10 @@ RUN cd /seqexec/app/seqexec-server-gn/target/universal/ && \
     echo 'deb https://repos.azul.com/zulu/deb stable main' > /etc/apt/sources.list.d/zulu.list && \
     apt-get update && \
     apt-get install -y zulu17-jdk && \
+    java -version && \
     mkdir -p jre && \
-    cp -a /usr/lib/jvm/zulu-17-*/. jre/ && \
+    ZULU_DIR=$(dirname "$(readlink -f /usr/bin/java)" | sed 's|/bin||') && \
+    cp -a "$ZULU_DIR"/. jre/ && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
     cd .. && \
