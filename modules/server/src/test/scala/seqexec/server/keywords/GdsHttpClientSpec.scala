@@ -130,6 +130,11 @@ final class GdsHttpClientSpec extends CatsSuite {
     json shouldEqual keywordExpectedJson
   }
 
+  test("filter non-ASCII characters from string keywords") {
+    val keyword = StringKeyword(KeywordName.OBJECT, "Café\u0001Test")
+    keyword.stringValue shouldEqual "CafTest"
+  }
+
   def httpClient(status: Status, body: String): Client[IO] = {
     val service = HttpRoutes.of[IO] { case _ =>
       Response[IO](status).withEntity(body).pure[IO]
