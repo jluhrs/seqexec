@@ -32,4 +32,4 @@ jobs:
         run: sbt headerCheck test:headerCheck scalafmtCheckAll
 
       - name: Run tests
-        run: sbt -J-Xmx6g +compile seqexec_modelJVM/test seqexec_modelJS/test seqexec_engine/test seqexec_server/test seqexec_web_server/test seqexec_web_client/test
+        run: sbt -J-Xmx6g -J-Xss512m +compile seqexec_modelJVM/test seqexec_modelJS/test seqexec_engine/test seqexec_server/test seqexec_web_server/test seqexec_web_client/test
