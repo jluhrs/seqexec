@@ -34,7 +34,7 @@
           ];
           typelevelShell = {
             nodejs.enable = true;
-            nodejs.package = pkgs.nodejs-22_x;
+            nodejs.package = pkgs2.nodejs-22_x;
             jdk.package = pkgs.jdk17;
           };
           env = [
