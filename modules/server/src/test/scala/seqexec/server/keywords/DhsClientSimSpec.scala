@@ -20,6 +20,7 @@ class DhsClientSimSpec extends munit.CatsEffectSuite {
       case _                => fail("Bad id")
     }
   }
+
   test("accept keywords") {
     assertEquals(
       (for {
@@ -32,6 +33,11 @@ class DhsClientSimSpec extends munit.CatsEffectSuite {
       } yield ()).unsafeRunSync(),
       ()
     )
+  }
+
+  test("filter non-ASCII characters from string keywords") {
+    val keyword = StringKeyword(KeywordName.OBJECT, "Café\u0001Test")
+    assertEquals(keyword.stringValue, "CafTest")
   }
 
 }

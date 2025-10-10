@@ -134,13 +134,21 @@ package keywords {
   final case class BooleanKeyword(name: KeywordName, value: Boolean)
       extends Keyword[Boolean](name, TypeBoolean, value)
   final case class StringKeyword(name: KeywordName, value: String)
-      extends Keyword[String](name, TypeString, value)
+      extends Keyword[String](name, TypeString, value)                                 {
+    override val stringValue: String =
+      v.collect {
+        // FITS requires chars in the range 32-126 (hex 20-7E), excluding control characters and DEL.
+        // See https://archive.stsci.edu/fits/fits_standard/
+        case c if !(Character.isISOControl(c) || c > 127) => c
+      }
+  }
+
   final case class FloatPrecisionKeyword(name: KeywordName, precision: Int, value: Float)
-      extends Keyword[Float](name, TypeFloat, value)                                   {
+      extends Keyword[Float](name, TypeFloat, value)   {
     override val stringValue: String = s"%.${precision}f".formatLocal(USLocale, value.toDouble)
   }
   final case class DoublePrecisionKeyword(name: KeywordName, precision: Int, value: Double)
-      extends Keyword[Double](name, TypeDouble, value)                                 {
+      extends Keyword[Double](name, TypeDouble, value) {
     override val stringValue: String = s"%.${precision}f".formatLocal(USLocale, value)
   }
 
@@ -292,20 +300,24 @@ package object keywords {
     f:    (KeywordName, A) => Keyword[A]
   ): KeywordBag => F[KeywordBag] =
     k => get.safeValOrDefault.map(x => k.add(f(name, x)))
+
   def buildInt32[F[_]: MonadError[*[_], Throwable]](
     get:  F[Int],
     name: KeywordName
   ): KeywordBag => F[KeywordBag] = buildKeyword(get, name, Int32Keyword)
+
   def buildDouble[F[_]: MonadError[*[_], Throwable]](
     get:  F[Double],
     name: KeywordName
   ): KeywordBag => F[KeywordBag] = buildKeyword(get, name, DoubleKeyword)
+
   def buildDoublePrecision[F[_]: MonadError[*[_], Throwable]](
     get:       F[Double],
     precision: Int,
     name:      KeywordName
   ): KeywordBag => F[KeywordBag] = k =>
     get.safeValOrDefault.map(x => k.add(DoublePrecisionKeyword(name, precision, x)))
+
   def buildBoolean[F[_]: MonadError[*[_], Throwable]](
     get:  F[Boolean],
     name: KeywordName,
@@ -314,6 +326,7 @@ package object keywords {
     implicit val defaultV = ev
     buildKeyword(get, name, BooleanKeyword)
   }
+
   def buildString[F[_]: MonadError[*[_], Throwable]](
     get:  F[String],
     name: KeywordName
