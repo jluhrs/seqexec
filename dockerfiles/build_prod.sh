@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set variables
-IMAGE_NAME="registry.gitlab.com/nsf-noirlab/gemini/rtsw/user-tools/seqexec-tester/seqexec-prod-7"
+IMAGE_NAME="registry.gitlab.com/nsf-noirlab/gemini/rtsw/user-tools/seqexec-tester/seqexec-prod"
 OUTPUT_DIR="$(pwd)/output"
 
 # Ensure output directory exists
@@ -9,7 +9,7 @@ mkdir -p "$OUTPUT_DIR"
 
 # Build Docker image
 echo "Building production Docker image..."
-docker build -t "$IMAGE_NAME" -f Dockerfile.gn ..
+docker build -t "$IMAGE_NAME" -f Dockerfile.prod ..
 
 # Extract and copy tar file to host
 echo "Extracting and copying production tar file to host..."

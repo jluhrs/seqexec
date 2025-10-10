@@ -74,7 +74,8 @@ object enumerations {
       "r_G0303_RG610_G0307"     -> "r + RG610",
       "i_G0302_CaT_G0309"       -> "i + CaT",
       "z_G0304_CaT_G0309"       -> "z + CaT",
-      "u_G0308"                 -> "u"
+      "u_G0308"                 -> "u",
+      "ri_G0349"                -> "ri"
     )
 
     val Niri: Map[String, String] = Map(
