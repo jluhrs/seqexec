@@ -172,10 +172,11 @@ object GnirsControllerEpics extends GnirsEncoders {
         def specialConversion(d: Disperser): String = s"${disperserStr(d)}/mm${cameraStr(c)}HR"
 
         val v = s match {
-          case CrossDisperserS(Disperser.D_10) if c === Camera.LONG_BLUE => "10/mmLBSX"
-          case CrossDisperserL(Disperser.D_10) if c === Camera.LONG_BLUE => "10/mmLBLX"
-          case Mirror(d) if slit.exists(_ === SlitWidth.HR_IFU)          => specialConversion(d)
-          case _                                                         => stdConversion(s.disperser)
+          case CrossDisperserS(Disperser.D_10) if c === Camera.LONG_BLUE  => "10/mmLBSX"
+          case CrossDisperserL(Disperser.D_10) if c === Camera.LONG_BLUE  => "10/mmLBLX"
+          case CrossDisperserL(Disperser.D_111) if c === Camera.LONG_BLUE => "111/mmLBLX"
+          case Mirror(d) if slit.exists(_ === SlitWidth.HR_IFU)           => specialConversion(d)
+          case _                                                          => stdConversion(s.disperser)
         }
 
         val defaultMode = "WAVELENGTH"
