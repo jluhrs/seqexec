@@ -342,7 +342,7 @@ trait GhostLUT {
 
   val BiasSVTime               = 0.seconds
   val FlatSVTime               = 0.1.seconds
-  val ArcSVTime                = 300.seconds
+  val ArcSVTime                = 450.seconds
   val GhostCalibrationSVRepeat = 2
 
   def svCalibExposureTime(obsType: String) = {
