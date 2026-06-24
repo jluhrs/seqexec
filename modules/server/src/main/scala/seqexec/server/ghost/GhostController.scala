@@ -57,8 +57,9 @@ object GhostController {
           _          <- Logger[F].info(
                           s"GHOST Guiding state value: ${value.getOrElse("None")}, isGuiding idle: $idle"
                         )
-          _          <-
-            Logger[F].info("Seqexec will send a MOVE_TO to GHOST IFU bFocus and rFocus").when_(idle)
+          _          <- if (idle)
+                          Logger[F].info("Seqexec will send a MOVE_TO to GHOST IFU bFocus and rFocus")
+                        else Applicative[F].unit
           asList      = finalConfig.config.toList.sortBy(_._1)
           _          <- Logger[F].debug(pprint.apply(asList).toString)
         } yield finalConfig
