@@ -1940,7 +1940,7 @@ object GiapiStatusApply {
       GhostCalibrationFilterWheel,
       GhostCalibrationFilterDemand,
       GhostIFU1GuideType,
-      GhostIFU2GuideType,
+      GhostIFU2GuideType
     )
 
   /** Select the member of GiapiStatusApply with the given tag, if any. */
