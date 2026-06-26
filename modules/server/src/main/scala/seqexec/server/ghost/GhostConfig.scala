@@ -253,14 +253,13 @@ sealed trait GhostConfig extends GhostLUT {
       giapiConfig(GhostRFocusType, "FOCUS_DEMAND_MOVETO_FOCUS_POSITION")
 
   def setIFUGuideMode: Configuration =
-
     giapiConfig(GhostIFU1GuideType, "IFU_GUIDE_DEMAND_RELATIVE") |+|
       giapiConfig(GhostIFU2GuideType, "IFU_GUIDE_DEMAND_RELATIVE")
 
   def configuration: Configuration =
+    // REL-4855 we set the ifu guide mode in all cases
     baseConfiguration |+| slitMaskConfiguration |+| setIFUGuideMode |+| (
       if (!isScience(obsType)) {
-        // as per REL-4855 we move ifus to focus for calibrations
         ifuCalibration |+| channelConfig |+| svCalib |+|
           GhostConfig.fiberConfig1(fiberAgitator1) |+|
           GhostConfig.fiberConfig2(fiberAgitator2)
