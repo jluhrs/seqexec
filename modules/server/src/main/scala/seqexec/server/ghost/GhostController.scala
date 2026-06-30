@@ -3,6 +3,7 @@
 
 package seqexec.server.ghost
 
+import cats.Applicative
 import cats.effect.Sync
 import cats.syntax.all._
 import giapi.client.commands.Configuration
@@ -29,9 +30,11 @@ trait GhostController[F[_]] extends GiapiInstrumentController[F, GhostConfig] {
   def stopPaused: F[ObserveCommandResult]
 
   def abortPaused: F[ObserveCommandResult]
+
 }
 
 object GhostController {
+
   def apply[F[_]: Sync: Logger](client: GhostClient[F], gds: GdsClient[F]): GhostController[F] =
     new AbstractGiapiInstrumentController[F, GhostConfig, GhostClient[F]](client, Seconds(90))
       with GhostController[F] {
@@ -40,8 +43,26 @@ object GhostController {
 
       override val name = "GHOST"
 
+      private def isAGIdle: F[Boolean] =
+        // 2 is idle, and 1 is guiding. We have more intermediate states but we'll
+        // assume we don't want to move focus
+        client.guidingState.map(_.exists(_ === 2))
+
       override def configuration(config: GhostConfig): F[Configuration] =
-        Logger[F].debug(pprint.apply(config.configuration).toString) *> config.configuration.pure[F]
+        for {
+          baseConfig <- config.configuration.pure[F]
+          value      <- client.guidingState
+          idle       <- isAGIdle
+          finalConfig = baseConfig |+| config.moveIFUToFocus.when(_ => idle)
+          _          <- Logger[F].info(
+                          s"GHOST Guiding state value: ${value.getOrElse("None")}, isGuiding idle: $idle"
+                        )
+          _          <- if (idle)
+                          Logger[F].info("Seqexec will send a MOVE_TO to GHOST IFU bFocus and rFocus")
+                        else Applicative[F].unit
+          asList      = finalConfig.config.toList.sortBy(_._1)
+          _          <- Logger[F].debug(pprint.apply(asList).toString)
+        } yield finalConfig
 
       override def stopObserve: F[Unit] =
         client.stop.void

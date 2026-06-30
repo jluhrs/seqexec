@@ -247,22 +247,26 @@ sealed trait GhostConfig extends GhostLUT {
       giapiConfig(GhostThXeLamp, 0)
     }
 
-  private val internalFocusConfiguration: Configuration =
+  // Move both IFUs to focus position. not desirable if guidi
+  def moveIFUToFocus: Configuration =
     giapiConfig(GhostBFocusType, "FOCUS_DEMAND_MOVETO_FOCUS_POSITION") |+|
       giapiConfig(GhostRFocusType, "FOCUS_DEMAND_MOVETO_FOCUS_POSITION")
 
+  def setIFUGuideMode: Configuration =
+    giapiConfig(GhostIFU1GuideType, "IFU_GUIDE_DEMAND_RELATIVE") |+|
+      giapiConfig(GhostIFU2GuideType, "IFU_GUIDE_DEMAND_RELATIVE")
+
   def configuration: Configuration =
-    baseConfiguration |+| slitMaskConfiguration |+| internalFocusConfiguration |+| (
+    // REL-4855 we set the ifu guide mode in all cases
+    baseConfiguration |+| slitMaskConfiguration |+| setIFUGuideMode |+| (
       if (!isScience(obsType)) {
-        ifuCalibration |+| channelConfig |+|
-          svCalib |+|
+        ifuCalibration |+| channelConfig |+| svCalib |+|
           GhostConfig.fiberConfig1(fiberAgitator1) |+|
           GhostConfig.fiberConfig2(fiberAgitator2)
       } else
         ifu1Config |+| ifu2Config |+|
           GhostConfig.fiberConfig1(FiberAgitator.None) |+|
-          GhostConfig.fiberConfig2(FiberAgitator.None)
-          |+|
+          GhostConfig.fiberConfig2(FiberAgitator.None) |+|
           userTargetsConfig |+| channelConfig |+| adcConfiguration |+|
           // agOverride |+|
           svConfiguration(svCameraOverride, scienceMagnitude) |+| prvMode
